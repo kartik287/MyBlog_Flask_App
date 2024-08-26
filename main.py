@@ -13,8 +13,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from forms import CreatePostForm, RegistrationForm, LoginForm, CommentsForm
 import os
 
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
@@ -43,7 +44,7 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 posts_db_path = os.path.join(current_directory, 'instance/posts.db')
 class Base(DeclarativeBase):
     pass
-app.config['SQLALCHEMY_DATABASE_URI'] = ('sqlite:///' + posts_db_path)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", 'sqlite:///' + posts_db_path)
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -246,4 +247,4 @@ def contact():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5002)
+    app.run(debug=False, port=5002)
